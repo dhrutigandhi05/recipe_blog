@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Recipe</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<body>
+    <h1>Dhruti's Recipe Blog</h1>
+    <nav>
+        <div class="nav-left">
+            <h1>Add Recipes</h1>
+        </div>
+        <div class="nav-right">
+            <button onclick="window.location.href='/'">Home</button>
+            <button onclick="window.location.href='login.html'">Login</button>
+            <button onclick="window.location.href='register.html'">Register</button>
+            <a href="add_recipe.html">Add Recipe</a>
+            <div class="profile-menu">
+                <button class="profile-button">Profile</button>
+                <div class="profile-dropdown">
+                    <a href="#" id="viewMyRecipes">My Recipes</a>
+                    <a href="#" id="signOut">Sign Out</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <Form id="addRecipeForm">
+        <div>
+            <label>Name</label>
+            <input type="text" name="title" id="title" required>
+        </div>
+
+        <div>
+            <label>Ingredients</label>
+            <textarea name="ingredients" id="ingredients" required></textarea>
+        </div>
+
+        <div>
+            <label>Steps</label>
+            <textarea name="steps" id="steps" required></textarea>
+        </div>
+
+        <button type="submit">Add Recipe</button>
+    </Form>
+
+    <script src="/js/main.js"></script>
+</body>
+
+</html>
