@@ -2,21 +2,42 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const session = require('express-session');
+const MySQLStore = require('express-mysql-session')(session);
 const indexRoutes = require('./routes/index');
 const userRoutes = require('./routes/users');
 const recipeRoutes = require('./routes/recipes');
+const ini = require('ini');
+const fs = require('fs');
 
 const app = express();
+
+// Read the config.ini file
+const configFilePath = './config.ini';
+const configContent = fs.readFileSync(configFilePath, 'utf-8');
+
+// Parse the INI file content
+const config = ini.parse(configContent);
+
+// Database session store configuration
+const sessionStore = new MySQLStore({
+  host: config.database.host,
+  port: config.database.port,
+  user: config.database.user,
+  password: config.database.password,
+  database: config.database.database
+});
 
 // Middleware to parse JSON bodies
 app.use(bodyParser.json());
 
 // session
 app.use(session({
-  secret: 'a4r6w79827kg6qq7',
+  key: config.session.key,
+  secret: config.session.secret,
+  store: sessionStore,
   resave: false,
-  saveUninitialized: true,
-  cookie: {secure:false}
+  saveUninitialized: false,
+  cookie: {secure: false}
 }));
 
 // Serve static files

@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
           const data = await response.json();
           if (response.ok) {
             showMessage('Login successful');
-            window.location.href = '/add_recipe.html';
+            window.location.href = '/';
           } else {
             showMessage(data.error, true);
           }
@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Expose the search function to the global scope
     window.search = search;
-  
+
     // Handle Adding Recipes
     const addRecipeForm = document.getElementById('addRecipeForm');
     if (addRecipeForm) {
@@ -153,7 +153,7 @@ document.addEventListener('DOMContentLoaded', function () {
           const data = await response.json();
           if (response.ok) {
             showMessage('Recipe added successfully');
-            window.location.href = '/index.html';
+            window.location.href = '/';
           } else {
             showMessage(data.message, true);
           }
@@ -165,15 +165,15 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   
     // Handle Fetching Recipes for Home Page
-    async function fetchRecipes() {
+    async function fetchRecipes(ownRecipe = false) {
       try {
-        const response = await fetch('/recipes');
+        const response = await fetch(ownRecipe ? '/users/my-recipes' : '/recipes');
         const recipes = await response.json();
         const recipesList = document.getElementById('recipes');
         recipesList.innerHTML = '';
   
         recipes.forEach(recipe => {
-          const recipeBox = createRecipeBox(recipe);
+          const recipeBox = createRecipeBox(recipe, ownRecipe);
           recipesList.appendChild(recipeBox);
         });
       } catch (error) {
@@ -182,7 +182,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   
     // Create a recipe box
-    function createRecipeBox(recipe) {
+    function createRecipeBox(recipe, ownRecipe = false) {
       const recipeBox = document.createElement('div');
       recipeBox.className = 'recipe-box';
   
@@ -190,14 +190,29 @@ document.addEventListener('DOMContentLoaded', function () {
       title.textContent = recipe.title;
       recipeBox.appendChild(title);
   
-      const ingredients = document.createElement('p');
-      ingredients.textContent = `Ingredients: ${recipe.ingredients}`;
+      const ingredients = document.createElement('h4');
+      ingredients.textContent = `Ingredients:`;
       recipeBox.appendChild(ingredients);
+
+      const ingredientsList = document.createElement('p');
+      ingredientsList.textContent = `${recipe.ingredients}`; 
+      recipeBox.appendChild(ingredientsList);
   
-      const steps = document.createElement('p');
-      steps.textContent = `Steps: ${recipe.steps}`;
+      const steps = document.createElement('h4');
+      steps.textContent = `Steps:`;
       recipeBox.appendChild(steps);
-  
+
+      const stepsList = document.createElement('p');
+      stepsList.textContent = `${recipe.steps}`;
+      recipeBox.appendChild(stepsList);
+
+      if (ownRecipe) {
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Delete';
+        deleteButton.onclick = () => deleteRecipe(recipe.id, recipeBox);
+        recipeBox.appendChild(deleteButton);
+      }
+      
       return recipeBox;
     }
   
@@ -206,49 +221,82 @@ document.addEventListener('DOMContentLoaded', function () {
       fetchRecipes();
     }
 
-    // Handle profile menu
+    // handle deleteRecipe
+    async function deleteRecipe(recipeId, recipeBox) {
+      try {
+        const response = await fetch(`/recipes/${recipeId}`, {
+        method: 'DELETE'
+        });
+
+        if (response.ok) {
+          showMessage('Recipe deleted');
+          recipeBox.remove();
+        } else {
+          showMessage('Could not delete recipe', true);
+        }
+
+      } catch (error) {
+        console.error('Error deleting recipe', error);
+        showMessage('Error occurred', true);
+      }
+    }
+
+    // handle profile menu
     const signOutButton = document.getElementById('signOut');
     const viewMyRecipesButton = document.getElementById('viewMyRecipes');
+    const userEmailElement = document.getElementById('userEmail');
 
     if (viewMyRecipesButton) {
-      viewMyRecipesButton.addEventListener('click', async () => {
-        try {
-          const response = await fetch('/users/my-recipes');
-          const recipes = await response.json();
-          const recipesList = document.getElementById('recipes');
-          recipesList.innerHTML = '';
-          recipes.forEach((recipe) => {
-            const recipeBox = document.createElement('div');
-            recipeBox.classList.add('recipe-box');
-            recipeBox.innerHTML = `<h3>${recipe.title}</h3><p>${recipe.description}</p>`;
-            recipesList.appendChild(recipeBox);
-          });
-        } catch (error) {
-          console.error('Error:', error);
-          showMessage('An error occurred', true);
-        }
-      });
+      viewMyRecipesButton.addEventListener('click', () => fetchRecipes(true));
     }
     
-    if (signOutButton) {
-      signOutButton.addEventListener('click', async () => {
+    async function fetchUserInfo() {
         try {
-          const response = await fetch('/users/logout', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
+            const response = await fetch('/users/me');
+            const data = await response.json();
+            if (response.ok && data.email) {
+                userEmailElement.textContent = `Hi, ${data.email}`;
+                userEmailElement.style.display = 'block';
+            } else {
+                userEmailElement.style.display = 'none';
             }
-          });
-          if (response.ok) {
-            showMessage('Signed out successfully');
-            window.location.href = '/';
-          } else {
-            showMessage('An error occurred', true);
-          }
         } catch (error) {
-          console.error('Error:', error);
-          showMessage('An error occurred', true);
+            console.error('Error fetching user info:', error);
+            userEmailElement.style.display = 'none';
         }
-      });
     }
+
+    if (signOutButton) {
+        signOutButton.addEventListener('click', async () => {
+            try {
+                const response = await fetch('/users/logout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    showMessage('Signed out successfully');
+                    userEmailElement.style.display = 'none';
+                    window.location.href = '/';
+                } else {
+                    let data;
+                    try {
+                        data = await response.json();
+                        showMessage(data.message || 'an error occurred')
+                    } catch (err) {
+                        console.error('Expected JSON response but got:', err);
+                        showMessage('An error occurred during sign out', true);
+                        return;
+                    }
+                    showMessage(data.message || 'An error occurred', true);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showMessage('An error occurred', true);
+            }
+        });
+    }
+    fetchUserInfo();
 });  

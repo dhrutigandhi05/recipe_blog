@@ -1,8 +1,8 @@
 function is_authenticated(req, res, next){
     if (req.session.userId){
-        return next;
+        return next();
     } else {
-        res.status(400).json({message: 'Login to add recipes'});
+        res.status(401).json({message: 'Unauthorized'});
     }
 }
 

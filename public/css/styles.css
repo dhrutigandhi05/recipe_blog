@@ -1,9 +1,9 @@
 /* General Styles */
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Roboto', sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #f4f4f4;
+  background-color: #f0f2f5;
   color: #333;
   line-height: 1.6;
 }
@@ -12,7 +12,8 @@ body {
 h1, h2 {
   text-align: center;
   margin: 20px 0;
-  color: #333;
+  color: #2c3e50;
+  font-weight: 700;
 }
 
 /* Navigation */
@@ -20,8 +21,9 @@ nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #000000;
+  background-color: #34495e;
   padding: 10px 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 nav .nav-left {
@@ -30,7 +32,7 @@ nav .nav-left {
 }
 
 nav .nav-left h1 {
-  color: #fff;
+  color: #ecf0f1;
   margin: 0;
 }
 
@@ -43,17 +45,19 @@ nav .nav-right a,
 nav .nav-right button {
   margin-left: 10px;
   text-decoration: none;
-  color: #fff;
-  padding: 5px 10px;
+  color: #ecf0f1;
+  padding: 10px 15px;
   border-radius: 5px;
   border: none;
   cursor: pointer;
   font-size: 16px;
+  background-color: #34495e;
+  transition: background-color 0.3s ease;
 }
 
 nav .nav-right a:hover,
 nav .nav-right button:hover {
-  background-color: #000000;
+  background-color: #2c3e50;
 }
 
 /* Forms */
@@ -75,6 +79,7 @@ form label {
   display: block;
   margin-bottom: 5px;
   font-weight: bold;
+  color: #2c3e50;
 }
 
 form input,
@@ -84,21 +89,29 @@ form textarea {
   border: 1px solid #ddd;
   border-radius: 5px;
   box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+form input:focus,
+form textarea:focus {
+  border-color: #34495e;
+  outline: none;
 }
 
 form button {
   display: inline-block;
   padding: 10px 20px;
-  background-color: #333;
+  background-color: #34495e;
   color: #fff;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
+  transition: background-color 0.3s ease;
 }
 
 form button:hover {
-  background-color: #555;
+  background-color: #2c3e50;
 }
 
 /* Recipe List */
@@ -117,15 +130,23 @@ form button:hover {
   border: 1px solid #ddd;
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.recipe-box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 }
 
 .recipe-box h3 {
   margin: 0 0 10px;
-  color: #333;
+  color: #2c3e50;
+  font-weight: 700;
 }
 
 .recipe-box p {
   margin: 5px 0;
+  color: #7f8c8d;
 }
 
 /* Responsive */
@@ -148,29 +169,37 @@ form button:hover {
 }
 
 .profile-button {
-  background-color: #4caf50;
+  background-color: #34495e;
   color: white;
   padding: 10px;
   font-size: 16px;
   border: none;
   cursor: pointer;
   border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.profile-button:hover {
+  background-color: #2c3e50;
 }
 
 .profile-dropdown {
   display: none;
   position: absolute;
-  background-color: rgb(0, 0, 0);
+  background-color: #fff;
   min-width: 160px;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
+  border-radius: 5px;
+  overflow: hidden;
 }
 
 .profile-dropdown a {
-  color: rgb(0, 0, 0);
+  color: #2c3e50;
   padding: 12px 16px;
   text-decoration: none;
   display: block;
+  transition: background-color 0.3s ease;
 }
 
 .profile-dropdown a:hover {
