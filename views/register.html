@@ -9,11 +9,12 @@
 </head>
 
 <body>
-  <h1>Dhruti's Recipe Blog</h1>
+  <h1>Dhruti's Recipe Book</h1>
   <nav>
     <div class="nav-left">
         <h1>Register</h1>
     </div>
+
     <div class="nav-right">
         <button onclick="window.location.href='/'">Home</button>
         <button onclick="window.location.href='login.html'">Login</button>
@@ -27,16 +28,43 @@
             </div>
         </div>
     </div>
-</nav>
-  <form id="registerForm">
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" required autocomplete="email">
+  </nav>
 
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required autocomplete="new-password">
+  <form id="registerForm">
+    <div>
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" placeholder="Enter your email" autocomplete="email">
+    </div>
+
+    <div>
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" placeholder="Enter a password" autocomplete="new-password">
+    </div>
+
+    <div id="passwoprdMessage">
+        <h3>Password must include the following:</h3>
+        <p id="letter" class="invalid">A <b>lowercase</b> letter</p>
+        <p id="capital" class="invalid">An <b>uppercase</b> letter</p>
+        <p id="number" class="invalid">A <b>number</b></p>
+        <p id="length" class="invalid">Minimum <b>8 characters</b></p>
+        <p id="special" class="invalid">A <b>special character</b></p>
+    </div>
+
+    <div>
+      <label for="repeat_password">Re-Enter Password:</label>
+      <input type="password" id="repeat_password" name="repeat_password" placeholder="Re-Enter your password" autocomplete="confirm-password">
+    </div>
 
     <button type="submit">Register</button>
+
+    <div class="container login">
+      <p>Already have an account? <a href="login.html">Log in</a>.</p>
+    </div>
   </form>
+  
+  
+  
+  
 
   <script src="/js/main.js"></script>
 </body>

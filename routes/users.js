@@ -45,7 +45,7 @@ router.get('/me', (req, res) => {
     if (req.session && req.session.userId) {
         res.json({ email: req.session.email });
     } else {
-        res.status(401).json({ message: 'Not logged in' });
+        res.status(401).json({message: 'Not logged in' });
     }
 });
 

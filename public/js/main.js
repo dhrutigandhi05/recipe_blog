@@ -55,7 +55,105 @@ document.addEventListener('DOMContentLoaded', function () {
         }
       });
     }
-  
+    
+    // Handle password validation
+    function validatePassword(password) {
+      const minLength = 8;
+      const upperCase = /[A-Z]/.test(password);
+      const lowerCase = /[a-z]/.test(password);
+      const number = /\d/.test(password);
+      const specialCharacter = /[!@#$%^&*(),.<>?|;':"{}[\]`~\/]/.test(password);
+
+      if (password.length < minLength) {
+        return 'Password must be at least 8 characters long';
+      }
+
+      if (!upperCase) {
+        return 'Password must have at least one uppercase letter';
+      }
+
+      if (!lowerCase) {
+        return 'Password must have at least one lowercase letter';
+      }
+
+      if (!number) {
+        return 'Password must have at least one number';
+      }
+
+      if (!specialCharacter) {
+        return 'Password must have at least one special character';
+      }
+
+      return null;
+    } 
+
+    const passwordInput = document.getElementById('password');
+    const messageBox = document.getElementById('message');
+    const letter = document.getElementById('letter');
+    const capital = document.getElementById('capital');
+    const number = document.getElementById('number');
+    const length = document.getElementById('length');
+    const special = document.getElementById('special');
+
+    if (passwordInput) {
+      passwordInput.onfocus = function () {
+          messageBox.style.display = "block";
+      }
+
+      passwordInput.onblur = function () {
+          messageBox.style.display = "none";
+      }
+
+      passwordInput.onkeyup = function () {
+          const password = passwordInput.value;
+
+          const lowerCaseLetters = /[a-z]/g;
+          if (password.match(lowerCaseLetters)) {
+              letter.classList.remove("invalid");
+              letter.classList.add("valid");
+          } else {
+              letter.classList.remove("valid");
+              letter.classList.add("invalid");
+          }
+
+          const upperCaseLetters = /[A-Z]/g;
+          if (password.match(upperCaseLetters)) {
+              capital.classList.remove("invalid");
+              capital.classList.add("valid");
+          } else {
+              capital.classList.remove("valid");
+              capital.classList.add("invalid");
+          }
+
+          const numbers = /[0-9]/g;
+          if (password.match(numbers)) {
+              number.classList.remove("invalid");
+              number.classList.add("valid");
+          } else {
+              number.classList.remove("valid");
+              number.classList.add("invalid");
+          }
+          
+          if (password.length >= 8) {
+              length.classList.remove("invalid");
+              length.classList.add("valid");
+          } else {
+              length.classList.remove("valid");
+              length.classList.add("invalid");
+          }
+
+          // Validate special characters
+          const specialCharacters = /[!@#$%^&*(),.<>?|;':"{}[\]`~\/]/g;
+          if (password.match(specialCharacters)) {
+              special.classList.remove("invalid");
+              special.classList.add("valid");
+          } else {
+              special.classList.remove("valid");
+              special.classList.add("invalid");
+          }
+      }
+  }
+
     // Handle Registration
     const registerForm = document.getElementById('registerForm');
     if (registerForm) {
@@ -63,8 +161,9 @@ document.addEventListener('DOMContentLoaded', function () {
         e.preventDefault();
         const emailElement = document.getElementById('email');
         const passwordElement = document.getElementById('password');
+        const repeatPasswordElement = document.getElementById('repeat_password');
 
-        if (!emailElement || !passwordElement){
+        if (!emailElement || !passwordElement || !repeatPasswordElement){
             console.error('email or password not found');
             showMessage('email or password not found', true);
             return;
@@ -72,6 +171,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const email = emailElement.value;
         const password = passwordElement.value;
+        const repeatPassword = repeatPasswordElement.value;
+
+        const passwordError = validatePassword(password);
+        if (passwordError) {
+          showMessage(passwordError, true);
+          return;
+        } 
+        
+        if (password !== repeatPassword) {
+          showMessage('Passwords do not match', true);
+          return;
+        }
   
         try {
           const response = await fetch('/users/register', {
